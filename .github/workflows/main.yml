@@ -26,11 +26,8 @@ jobs:
         with:
           deno-version: '1.17.1'
 
-      - name: Install Dependencies
-        run: deno cache --unstable deps.ts
-
       - name: Build and package
-        run: deno compile --unstable --target ${{ matrix.os }}-${{ matrix.arch }} --output dist/app-${{ matrix.os }}-${{ matrix.arch }} app.ts
+        run: deno compile --unstable --allow-env --allow-read --allow-write --target ${{ matrix.os }}-${{ matrix.arch }} --output dist/app-${{ matrix.os }}-${{ matrix.arch }} main.ts
 
       - name: Upload artifact
         uses: actions/upload-release-asset@v1
