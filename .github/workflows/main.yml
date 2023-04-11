@@ -21,18 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Print working directory and list files
-        run: |
-          pwd
-          ls -la
-
-      - name: Print Deno version
-        run: deno --version
-
       - name: Install Deno
-        uses: denolib/setup-deno@v2
-        with:
-          deno-version: '1.17.1'
+        run: |
+          curl -fsSL https://deno.land/x/install/install.sh | sh -s v1.18.0
+          export DENO_INSTALL="/Users/runner/.deno"
+          export PATH="$DENO_INSTALL/bin:$PATH"
+          deno --version
 
       - name: Build and package
         run: |
