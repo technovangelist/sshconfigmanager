@@ -73,7 +73,7 @@ async function prompt(
 	printConfig(existingConfig);
 	console.log("\nProposed configuration:");
 	printConfig(newConfig);
-	console.log("\nDo you want to update this host? [y/N]");
+	console.log("\nDo you want to update this host? [y/N] ");
 
 	const buf = new Uint8Array(1024);
 	const n = <number>await Deno.stdin.read(buf);
