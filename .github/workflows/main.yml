@@ -24,7 +24,7 @@ jobs:
       - name: Set up Deno
         uses: denoland/setup-deno@main
         with:
-          deno-version: v1.16.2 # Replace with the desired version of Deno
+          deno-version: v1.32.1 # Replace with the desired version of Deno
 
     
 
