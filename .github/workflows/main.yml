@@ -69,7 +69,7 @@ jobs:
       - name: Upload macOS Apple Silicon asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/app-aarch64-apple-darwin
           asset_name: app-aarch64-apple-darwin
           asset_content_type: application/octet-stream
