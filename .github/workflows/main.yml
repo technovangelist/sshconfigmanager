@@ -20,7 +20,7 @@ jobs:
       - name: Set up Deno
         uses: denoland/setup-deno@main
         with:
-          deno-version: v1.17.1
+          deno-version: v1.32.1
 
       - name: Install dependencies
         run: deno cache --unstable main.ts
