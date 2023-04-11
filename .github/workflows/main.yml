@@ -46,7 +46,7 @@ jobs:
     
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      RELEASE_TAG: v$(date +'%Y%m%d-%H%M%S')
+      RELEASE_TAG: $(date +'%Y%m%d-%H%M%S')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
