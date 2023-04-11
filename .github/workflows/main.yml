@@ -14,12 +14,20 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        os: [apple-darwin]
-        arch: [aarch64]
+        os: [macos-latest]
+        arch: [arm64]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Print working directory and list files
+        run: |
+          pwd
+          ls -la
+
+      - name: Print Deno version
+        run: deno --version
 
       - name: Install Deno
         uses: denolib/setup-deno@v2
@@ -27,14 +35,15 @@ jobs:
           deno-version: '1.17.1'
 
       - name: Build and package
-        run: deno compile --unstable --allow-env --allow-read --allow-write --target ${{ matrix.arch }}-${{ matrix.os }} --output dist/app-${{ matrix.arch }}-${{ matrix.os }} main.ts
+        run: |
+          deno compile --unstable --allow-env --allow-read --allow-write --target aarch64-apple-darwin --output dist/app-aarch64-apple-darwin main.ts
 
       - name: Upload artifact
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ env.RELEASE_UPLOAD_URL }}
-          asset_path: dist/app-${{ matrix.arch }}-${{ matrix.os }}
-          asset_name: app-${{ matrix.arch }}-${{ matrix.os }}
+          asset_path: dist/app-aarch64-apple-darwin
+          asset_name: app-aarch64-apple-darwin
           asset_content_type: application/octet-stream
 
     env:
