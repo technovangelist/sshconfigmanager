@@ -85,7 +85,7 @@ jobs:
       - name: Upload macOS Apple Silicon asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ needs.build.outputs.upload-release-asset.RELEASE_UPLOAD_URL }}
+          upload_url: ${{ steps.set_release_upload_url.outputs.RELEASE_UPLOAD_URL }}
           asset_path: dist/app-macos-arm64
           asset_name: app-macos-arm64
           asset_content_type: application/octet-stream
@@ -93,7 +93,7 @@ jobs:
       # - name: Upload Linux Intel asset
       #   uses: actions/upload-release-asset@v1
       #   with:
-      #     upload_url: ${{ needs.build.outputs.upload-release-asset.RELEASE_UPLOAD_URL }}
+      #     upload_url: ${{ steps.set_release_upload_url.outputs.outputs.upload-release-asset.RELEASE_UPLOAD_URL }}
       #     asset_path: dist/app-ubuntu-latest-x64
       #     asset_name: app-ubuntu-latest-x64
       #     asset_content_type: application/octet-stream
