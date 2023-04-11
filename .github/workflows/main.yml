@@ -65,6 +65,8 @@ jobs:
             - Update dependency X to version Y
           draft: false
           prerelease: false
+      - name: List contents of dist directory
+        run: ls -laR dist
 
       - name: Upload macOS Apple Silicon asset
         uses: actions/upload-release-asset@v1
