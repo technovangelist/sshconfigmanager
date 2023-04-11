@@ -40,9 +40,9 @@ jobs:
           asset_name: app-macos-arm64
           asset_content_type: application/octet-stream
 
-    env:
-      ELECTRON_CACHE: ${{ runner.os }}-electron-cache
-      ELECTRON_BUILDER_CACHE: ${{ runner.os }}-electron-builder-cache
+    # env:
+    #   ELECTRON_CACHE: ${{ runner.os }}-electron-cache
+    #   ELECTRON_BUILDER_CACHE: ${{ runner.os }}-electron-builder-cache
 
   release:
     name: Create Release
