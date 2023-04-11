@@ -11,33 +11,37 @@ env:
 jobs:
   build:
     name: Build for macOS and Linux
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest]
+        arch: [x64, arm64]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install Deno
-        uses: denolib/setup-deno@v1
+        uses: denolib/setup-deno@v2
+        with:
+          deno-version: '1.17.1'
 
       - name: Install Dependencies
         run: deno cache --unstable deps.ts
 
       - name: Build and package
-        run: |
-          deno compile --unstable --target x86_64-apple-darwin --output dist/app-macos-x64 app.ts
-          deno compile --unstable --target aarch64-apple-darwin --output dist/app-macos-arm64 app.ts
-          deno compile --unstable --target x86_64-unknown-linux-gnu --output dist/app-linux-x64 app.ts
+        run: deno compile --unstable --target ${{ matrix.os }}-${{ matrix.arch }} --output dist/app-${{ matrix.os }}-${{ matrix.arch }} app.ts
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-app
+          name: ${{ matrix.os }}-${{ matrix.arch }}-app
           path: dist/
+
+    env:
+      ELECTRON_CACHE: ${{ runner.os }}-electron-cache
+      ELECTRON_BUILDER_CACHE: ${{ runner.os }}-electron-builder-cache
 
   release:
     name: Create Release
@@ -66,7 +70,7 @@ jobs:
       - name: Upload macOS Intel asset
         uses: actions/upload-artifact@v2
         with:
-          name: mac-intel
+          name: mac-x64
           path: dist/app-macos-x64
 
       - name: Upload macOS Apple Silicon asset
@@ -75,17 +79,23 @@ jobs:
           name: mac-arm64
           path: dist/app-macos-arm64
 
-      - name: Upload Linux asset
+      - name: Upload Linux Intel asset
         uses: actions/upload-artifact@v2
         with:
-          name: linux
-          path: dist/app-linux-x64
+          name: linux-x64
+          path: dist/app-ubuntu-latest-x64
+
+      - name: Upload Linux ARM64 asset
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-arm64
+          path: dist/app-ubuntu-latest-arm64
 
       - name: Attach assets to release
         id: attach_assets
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/app-${{ matrix.os }}
-          asset_name: app-${{ matrix.os }}
+          asset_path: dist/app-${{ matrix.os }}-${{ matrix.arch }}
+          asset_name: app-${{ matrix.os }}-${{ matrix.arch }}
           asset_content_type: application/octet-stream
