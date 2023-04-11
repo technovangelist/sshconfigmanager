@@ -41,9 +41,8 @@ jobs:
           asset_content_type: application/octet-stream
 
     env:
-      RUNNER_OS: ${{ runner.os }}
-      ELECTRON_CACHE: ${{ env.RUNNER_OS }}-electron-cache
-      ELECTRON_BUILDER_CACHE: ${{ env.RUNNER_OS }}-electron-builder-cache
+      ELECTRON_CACHE: macos-latest-electron-cache
+      ELECTRON_BUILDER_CACHE: macos-latest-electron-builder-cache
 
   release:
     name: Create Release
