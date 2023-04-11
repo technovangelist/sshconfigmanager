@@ -41,6 +41,7 @@ jobs:
           asset_content_type: application/octet-stream
 
     env:
+      RUNNER_OS: ${{ runner.os }}
       ELECTRON_CACHE: ${{ env.RUNNER_OS }}-electron-cache
       ELECTRON_BUILDER_CACHE: ${{ env.RUNNER_OS }}-electron-builder-cache
 
