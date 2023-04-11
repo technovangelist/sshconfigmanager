@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and package
         run: |
-          /Users/runner/.deno/bin/deno compile --unstable --allow-env --allow-read --allow-write --target aarch64-apple-darwin --output dist/app-aarch64-apple-darwin main.ts
+          deno compile --unstable --allow-env --allow-read --allow-write --target aarch64-apple-darwin --output dist/app-aarch64-apple-darwin main.ts
 
       - name: Upload artifact
         uses: actions/upload-release-asset@v1
