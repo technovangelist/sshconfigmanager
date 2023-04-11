@@ -42,7 +42,8 @@ jobs:
     name: Create Release
     needs: build
     runs-on: macOS-latest
-
+    permissions: write-all
+    
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -56,6 +57,7 @@ jobs:
         shell: bash
 
       - name: Create Release
+        
         id: create_release
         uses: actions/create-release@v1
         with:
