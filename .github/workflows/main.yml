@@ -43,8 +43,6 @@ jobs:
     
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      RELEASE_TAG_PREFIX: "v"
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -70,9 +68,10 @@ jobs:
       - name: Upload macOS Apple Silicon asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: dist/app-aarch64-apple-darwin
           asset_name: app-aarch64-apple-darwin
           asset_content_type: application/octet-stream
     
-
+    env:
+      RELEASE_TAG_PREFIX: "v"
