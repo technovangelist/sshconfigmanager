@@ -10,13 +10,12 @@ env:
 
 jobs:
   build:
-    name: Build for macOS and Linux
-    runs-on: ${{ matrix.os }}
-
+    name: Build for macOS Apple Silicon
+    runs-on: macos-latest
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
-        arch: [x64, arm64]
+        os: [macos-latest]
+        arch: [arm64]
 
     steps:
       - name: Checkout code
@@ -34,10 +33,12 @@ jobs:
         run: deno compile --unstable --target ${{ matrix.os }}-${{ matrix.arch }} --output dist/app-${{ matrix.os }}-${{ matrix.arch }} app.ts
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-release-asset@v1
         with:
-          name: ${{ matrix.os }}-${{ matrix.arch }}-app
-          path: dist/
+          upload_url: ${{ env.RELEASE_UPLOAD_URL }}
+          asset_path: dist/app-macos-arm64
+          asset_name: app-macos-arm64
+          asset_content_type: application/octet-stream
 
     env:
       ELECTRON_CACHE: ${{ runner.os }}-electron-cache
@@ -67,35 +68,116 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload macOS Intel asset
-        uses: actions/upload-artifact@v2
-        with:
-          name: mac-x64
-          path: dist/app-macos-x64
+      - name: Set release upload URL
+        id: set_release_upload_url
+        run: echo "::set-env name=RELEASE_UPLOAD_URL::${{ steps.create_release.outputs.upload_url }}"
 
       - name: Upload macOS Apple Silicon asset
-        uses: actions/upload-artifact@v2
-        with:
-          name: mac-arm64
-          path: dist/app-macos-arm64
-
-      - name: Upload Linux Intel asset
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-x64
-          path: dist/app-ubuntu-latest-x64
-
-      - name: Upload Linux ARM64 asset
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-arm64
-          path: dist/app-ubuntu-latest-arm64
-
-      - name: Attach assets to release
-        id: attach_assets
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/app-${{ matrix.os }}-${{ matrix.arch }}
-          asset_name: app-${{ matrix.os }}-${{ matrix.arch }}
+          upload_url: ${{ env.RELEASE_UPLOAD_URL }}
+          asset_path: dist/app-macos-arm64
+          asset_name: app-macos-arm64
           asset_content_type: application/octet-stream
+
+          # name: Build and Release
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# env:
+#   RELEASE_TAG: v$(date +'%Y%m%d-%H%M%S')
+
+# jobs:
+#   build:
+#     name: Build for macOS and Linux
+#     runs-on: ${{ matrix.os }}
+
+#     strategy:
+#       matrix:
+#         os: [macos-latest, ubuntu-latest]
+#         arch: [x64, arm64]
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Install Deno
+#         uses: denolib/setup-deno@v2
+#         with:
+#           deno-version: '1.17.1'
+
+#       - name: Install Dependencies
+#         run: deno cache --unstable deps.ts
+
+#       - name: Build and package
+#         run: deno compile --unstable --target ${{ matrix.os }}-${{ matrix.arch }} --output dist/app-${{ matrix.os }}-${{ matrix.arch }} app.ts
+
+#       - name: Upload artifact
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ${{ matrix.os }}-${{ matrix.arch }}-app
+#           path: dist/
+
+#     env:
+#       ELECTRON_CACHE: ${{ runner.os }}-electron-cache
+#       ELECTRON_BUILDER_CACHE: ${{ runner.os }}-electron-builder-cache
+
+#   release:
+#     name: Create Release
+#     needs: build
+#     runs-on: ubuntu-latest
+
+#     env:
+#       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Create Release
+#         id: create_release
+#         uses: actions/create-release@v1
+#         with:
+#           tag_name: ${{ env.RELEASE_TAG }}
+#           release_name: Release ${{ env.RELEASE_TAG }}
+#           body: |
+#             Changes in this release:
+#             - Update dependency X to version Y
+#           draft: false
+#           prerelease: false
+
+#       - name: Upload macOS Intel asset
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: mac-x64
+#           path: dist/app-macos-x64
+
+#       - name: Upload macOS Apple Silicon asset
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: mac-arm64
+#           path: dist/app-macos-arm64
+
+#       - name: Upload Linux Intel asset
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: linux-x64
+#           path: dist/app-ubuntu-latest-x64
+
+#       - name: Upload Linux ARM64 asset
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: linux-arm64
+#           path: dist/app-ubuntu-latest-arm64
+
+#       - name: Attach assets to release
+#         id: attach_assets
+#         uses: actions/upload-release-asset@v1
+#         with:
+#           upload_url: ${{ steps.create_release.outputs.upload_url }}
+#           asset_path: dist/app-${{ matrix.os }}-${{ matrix.arch }}
+#           asset_name: app-${{ matrix.os }}-${{ matrix.arch }}
+#           asset_content_type: application/octet-stream
